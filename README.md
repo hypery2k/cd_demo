@@ -1,1 +1,5 @@
-# cd_demo
+# Continous Delivery Samples
+
+## DevOps
+
+see [Wildfly Vagrant Chef Demo](wildfly-vagrant-chef)

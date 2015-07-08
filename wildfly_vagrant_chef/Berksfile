@@ -1,0 +1,12 @@
+site :opscode
+
+metadata
+
+cookbook 'apt'
+cookbook 'build-essential'
+cookbook 'logrotate', github: "stevendanna/logrotate"
+cookbook 'ruby_build'
+cookbook 'nodejs', github: "mdxp/nodejs-cookbook"
+cookbook 'git'
+cookbook 'vim'
+cookbook 'java'
