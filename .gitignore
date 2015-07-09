@@ -20,3 +20,10 @@ serenity_sample/.project
 serenity_sample/.settings*
 serenity_sample/target
 serenity_sample/build
+
+galen_sample/.classpath
+galen_sample/.project
+galen_sample/.settings*
+galen_sample/target
+galen_sample/build
+galen_sample/logs
