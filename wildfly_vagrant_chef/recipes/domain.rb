@@ -42,31 +42,35 @@ if node['wildfly-clu']['cluster_schema'][node.name][:role] == "domain-controller
 
    if node['wildfly-clu']['wildfly']['haproxy']
 
-          package "haproxy" do
-           action :install
-           notifies :create, "template[/etc/haproxy/haproxy.cfg]"
-          end
+      package "haproxy" do
+        action :install
+        notifies :create, "template[/etc/haproxy/haproxy.cfg]"
+      end
 
-          bash "wildfly_extract" do
-            # if Debian-like distribution enable service
-            if [ -r /lib/lsb/init-functions ]; then
-              sed -i -e 's,ENABLED=0,ENABLED=1,g' etc/default/haproxy
-            fi
-          end
+      bash "haproxy_default" do
+        code <<-EOH
+        # if Debian-like distribution enable service
+        if [ -r /lib/lsb/init-functions ]; then
+          sed -i -e 's,ENABLED=0,ENABLED=1,g' /etc/default/haproxy
+        fi
+        EOH
+        notifies :restart, "service[haproxy]",:delayed
+        action :nothing
+      end
 
    	  template "/etc/haproxy/haproxy.cfg"do
-      	   source   "haproxy.cfg.erb"
-    	   owner    "root"
-       	   group    "root"
-           mode     "0775"
-           notifies :restart, "service[haproxy]",:delayed
-           not_if { ::File.exists? node['wildfly-clu']['wildfly']['lock'] }
-         end
+        source   "haproxy.cfg.erb"
+    	  owner    "root"
+        group    "root"
+        mode     "0775"
+        notifies :run,"bash[haproxy_default]" , :immediately
+        not_if { ::File.exists? node['wildfly-clu']['wildfly']['lock'] }
+      end
 
-         service "haproxy" do
-	    supports :status => true,:restart => true, :stop => true, :start => true
-	    action [:enable,:start]
-	 end
+      service "haproxy" do
+	     supports :status => true,:restart => true, :stop => true, :start => true
+	     action [:enable,:start]
+	    end
 
    end
 
